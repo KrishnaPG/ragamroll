@@ -69,19 +69,3 @@ s.tracks.size().times { xx ->
 }
 
 println "0,0,End_of_file"
-
-/*
-t = s.createTrack();
-m = new ShortMessage();
-m.setMessage(ShortMessage.NOTE_ON, 0, 60, 64);
-e = new MidiEvent(m, 0)
-t.add(e)
-
-m = new ShortMessage();
-m.setMessage(ShortMessage.NOTE_OFF, 0, 60, 64);
-e = new MidiEvent(m, 4)
-t.add(e)
-
-MidiSystem.write(s, 0, f);
-*/
-
