@@ -30,6 +30,7 @@ import javax.sound.midi.*
 
 f = new File(args[0])
 def s = MidiSystem.getSequence(f)
+//println s.properties
 
 seqr = MidiSystem.getSequencer()
 println "0,0,Header,${s.tracks.size()},${s.class.fields.collect { fld -> if (s.divisionType == s.class."$fld.name") fld.name }.findAll{it != null}[0]},${s.resolution}"

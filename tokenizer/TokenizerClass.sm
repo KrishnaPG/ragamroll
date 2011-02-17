@@ -1,0 +1,31 @@
+%{ 
+// Copyright (c) 2010, Mani Balasubramanian <ragamroll@gmail.com>
+// All rights reserved.
+%}
+
+%start Map1::WhiteSpace
+
+%class TokenizerClass
+
+%map Map1
+%%
+//    Transition  Next_State  Actions
+WhiteSpace {
+      new_line  WhiteSpace  { incr_cpos(); incr_lpos(); }
+      space     WhiteSpace  { incr_cpos(); }
+      tab       WhiteSpace  { incr_cpos(); }
+      eof       OK          { dump_collection(); }
+      other     Word        { start_token(); incr_cpos(); accumulate(); }
+    }
+
+Word {
+  new_line  WhiteSpace  { incr_cpos(); incr_lpos();  end_token(); emit_token(); }
+  space     WhiteSpace  { incr_cpos(); end_token(); emit_token(); }
+  tab       WhiteSpace  { incr_cpos(); end_token(); emit_token();}
+  eof       OK          { end_token(); emit_token(); dump_collection(); }
+  other     Word        { incr_cpos(); accumulate(); }
+}
+
+OK {}
+%%
+
