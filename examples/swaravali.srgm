@@ -1,0 +1,81 @@
+% Copyright (c) 2012, Mani Balasubramanian <ragamroll@gmail.com>
+% All rights reserved.
+
+% Lines starting with % are comments and are ignored
+
+% Swaravali
+
+% Jfugue tempo and instrument
+T100 I[ALTO_SAX] 
+
+% All talas in their default jati are supported
+Tala=adi,1
+
+% A limited set of ragas are only supported. However using C12 notation
+% all ragas can be notated. 
+
+% This is Raga Mayamalavagoula, pitch of Sa is set to C
+Raga=c12,0
+
+% Set the octave to 5 and unit length to 1
+L=1 O=5
+
+% empty measure to get prepared
+
+%1
+S r G m P d N >s		 s <N d P m G r S
+
+%3
+S r S r S r G m			 S r G m P d N >s
+s <N >s <N >s <N d P		 >s <N d P m G r S
+
+
+%7
+S r G S r G S r 		 S r G m P d N >s
+s <N d >s <N d >s <N 		 >s <N d P m G r S
+
+%11
+S r G m S r G m 		S r G m P d N >s
+s <N d P >s <N d P 		>s <N d P m G r S
+
+%15
+S r G m P2 S r	 		S r G m P d N >s
+s <N d P m2 >s <N 	       >s <N d P m G r S
+
+%19
+S r G m P d S r			S r G m P d N >s
+s <N d P m G  >s <N 		>s <N d P m G r S
+
+%23
+S r G m P d N2			S r G m P d N >s
+s <N d P m G r2 		>s <N d P m G r S
+
+%27
+S r G m P m G r			S r G m P d N >s
+s <N d p m p d N		 >s <N d P m G r S
+
+%31
+S r G m P m d P			S r G m P d N >s
+s <N d p m p G m		 >s <N d P m G r S
+
+%35
+S r G m P2 G m 			P4 P4 
+G m P d N d P m			G m P G m G r S
+
+%39
+>s2 <N d N2 d P			d2 p m p2 p2
+G m P d N d P m			G m P G m G r S
+
+%43
+>s s <N d N N d P		d d p m p2 p2
+G m P d N d P m			G m P G m G r S
+
+%47
+S r G r G2 G m 			p m p2 d p d2
+m p d p d N d p			m p d p m G r S
+
+%51
+S r G m p2 p2			d d p2 m m p2
+d n >s2 s <N d p		>s <N d p m G r S
+
+
