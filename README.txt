@@ -9,3 +9,6 @@ raga_base.txt - contains the raga definitons
 From the directory where you have downloaded the above files, run
 
 groovy -cp <path to jfugue jar> ragamroll.groovy
+
+The application jar file was built using GroovyWrapper script available in 
+http://groovy.codehaus.org/WrappingGroovyScript
