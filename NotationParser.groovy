@@ -42,7 +42,7 @@ class NotationParser {
   def cur_length_mod = 1; // Integral Note Length L=1
   def tala_gati_tuple = ['adi','4']
   def raga_key_tuple = ['c12','0']
-  def cur_srg_abc_map = raga_base.ragas[raga_key_tuple[0]]['C12_SWARAS']
+  def cur_srg_abc_map = raga_base.ragas[raga_key_tuple[0].toLowerCase()]['C12_SWARAS']
   def cur_raga_swaras = cur_srg_abc_map.keySet()
 
   def SWARA_REGEX = /(>*|<*)(s|S|r|R|g|G|m|M|p|P|d|D|n|N|z|Z)(\d*)/
