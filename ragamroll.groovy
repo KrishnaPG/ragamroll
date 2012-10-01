@@ -105,7 +105,7 @@ np = new NotationParser()
 
 
 About = {
-    def pane = B.optionPane(message:'RagaM-Roll v0.008 \nA tool to Notate & Render Traditional Indian Music\nCopyright \u00a9 2010, Mani Balasubramanian <ragamroll@gmail.com>, All rights reserved.')
+    def pane = B.optionPane(message:'RagaM-Roll v0.010 \nA tool to Notate & Render Traditional Indian Music\nCopyright \u00a9 2010, Mani Balasubramanian <ragamroll@gmail.com>, All rights reserved.')
     def dialog = pane.createDialog(frame, 'About RagaM-Roll')
     dialog.show()
 }
