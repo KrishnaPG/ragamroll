@@ -42,7 +42,8 @@ class NotationParser {
   def cur_length_mod = 1; // Integral Note Length L=1
   def tala_gati_tuple = ['adi','4']
   def raga_key_tuple = ['c12','0']
-  def cur_srg_abc_map = raga_base.ragas[raga_key_tuple[0].toLowerCase()]['C12_SWARAS']
+  def c12_srg_abc_map = raga_base.ragas[raga_key_tuple[0].toLowerCase()]['C12_SWARAS']
+  def cur_srg_abc_map = c12_srg_abc_map
   def cur_raga_swaras = cur_srg_abc_map.keySet()
 
   def SWARA_REGEX = /(>*|<*)(s|S|r|R|g|G|m|M|p|P|d|D|n|N|z|Z)(\d*)/
@@ -278,10 +279,8 @@ class NotationParser {
     def Avarthanam = ""
     (0..measure-1).each{ t -> 
       Avarthanam += ((t+1 in accents) ? 
-            // temporarily disable P lookup to avoid crashing in case of ragas without P
-            //"${cur_srg_abc_map['S']}/${len}+${cur_srg_abc_map['P']}/${len} " : 
-            "${cur_srg_abc_map['S']}/${len}+${cur_srg_abc_map['S']}/${len} " : 
-            "R/${len} ") 
+	     "${c12_srg_abc_map['S']}/${len}+${c12_srg_abc_map['P']}/${len} " : 
+	     "R/${len} ") 
     }
     log( "Avarthanam: ${Avarthanam}")
     jfm += Avarthanam*(seq_props['seq_len']/measure + 1)
