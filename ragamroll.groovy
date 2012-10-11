@@ -147,7 +147,13 @@ StartPlayer = {
     } catch(e) {
       /* Nothing to stop */
     }
-    th_player = new Thread({ player.play(jfs + jft); player.close() })
+    th_player = new Thread({ 
+        try {
+          player.play(jfs + jft); player.close()
+	} catch(e) {
+	  println e
+	}
+    })
     println "player thread: ${th_player.toString()}"
     th_player.start()
     th_scroller = new Thread ({

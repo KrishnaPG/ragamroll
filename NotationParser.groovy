@@ -278,7 +278,9 @@ class NotationParser {
     def Avarthanam = ""
     (0..measure-1).each{ t -> 
       Avarthanam += ((t+1 in accents) ? 
-            "${cur_srg_abc_map['S']}/${len}+${cur_srg_abc_map['P']}/${len} " : 
+            // temporarily disable P lookup to avoid crashing in case of ragas without P
+            //"${cur_srg_abc_map['S']}/${len}+${cur_srg_abc_map['P']}/${len} " : 
+            "${cur_srg_abc_map['S']}/${len}+${cur_srg_abc_map['S']}/${len} " : 
             "R/${len} ") 
     }
     log( "Avarthanam: ${Avarthanam}")
