@@ -64,7 +64,7 @@ class NotationParser {
   Boolean debug = false
 
   /*-------------------------------------------------------------------------*/
-  // Convenience function to pring output for debugging
+  // Convenience function to print output for debugging
   /*-------------------------------------------------------------------------*/
   def log(s) { if (this.debug == true) println (s) }
 
@@ -427,8 +427,9 @@ class NotationParser {
 
   /*-------------------------------------------------------------------------*/
   // Provide an entry point for testing this class
-  // If a compact notation file is give it is rendered
+  // If a srgm file containing notation is given it is rendered
   // Otherwise a test string is rendered in various ragas
+  // TODO: convert this into an actual test
   /*-------------------------------------------------------------------------*/
   static void main(args) {
     def np = new NotationParser()
