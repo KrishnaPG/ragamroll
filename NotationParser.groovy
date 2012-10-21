@@ -131,7 +131,10 @@ class NotationParser {
     def tr_jfm = new IntervalPatternTransformer(semitones_above_C).transform(
                       new Pattern(jfm) ).getMusicString().split()[1]
 
-    return [] << elem << MP.getNote(tr_jfm).value << cur_length_mod * rel_len
+    def out = [] 
+    out << elem << MP.getNote(tr_jfm).value << cur_length_mod * rel_len
+    //println out
+    return out
   }
 
   /*-------------------------------------------------------------------------*/
@@ -275,15 +278,29 @@ class NotationParser {
       }
     }
 
-    def jfm = "V${voice} I[SITAR] "
+    def jfm_s = "V${voice} I[SITAR] "
+    def jfm_p = "V${voice+1} I[SITAR] &8356 " //add 2 cents to P
     def Avarthanam = ""
     (0..measure-1).each{ t -> 
       Avarthanam += ((t+1 in accents) ? 
-	     "${c12_srg_abc_map['S']}/${len}+${c12_srg_abc_map['P']}/${len} " : 
+	     //"${c12_srg_abc_map['S']}/${len}+${c12_srg_abc_map['P']}/${len} " : 
+	     "${c12_srg_abc_map['S']}/${len} " : 
 	     "R/${len} ") 
     }
     log( "Avarthanam: ${Avarthanam}")
-    jfm += Avarthanam*(seq_props['seq_len']/measure + 1)
+    def jfm = jfm_s + Avarthanam*(seq_props['seq_len']/measure + 1)
+
+    Avarthanam = ""
+    (0..measure-1).each{ t -> 
+      Avarthanam += ((t+1 in accents) ? 
+	     //"${c12_srg_abc_map['S']}/${len}+${c12_srg_abc_map['P']}/${len} " : 
+	     "${c12_srg_abc_map['P']}/${len} " : 
+	     "R/${len} ") 
+    }
+    log( "Avarthanam: ${Avarthanam}")
+    jfm += jfm_p + Avarthanam*(seq_props['seq_len']/measure + 1)
+    println jfm
+
     try {
       return (new IntervalPatternTransformer(
                 Integer.decode(raga_key_tuple[1])).transform(
