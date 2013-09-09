@@ -76,6 +76,7 @@ class RagaAnalyzer {
     }
   }
 
+
   public getRagaMap() { return this.raga_map }
   private initWalk (){ this.walk_list = [] }
   private printWalkList () {
@@ -91,9 +92,12 @@ class RagaAnalyzer {
     }
   }
 
+
   private allPossibleCases(c){
     return [c, c.toUpperCase(), c.toLowerCase()].unique()
   }
+
+
   private walkAstep(direction, swara){
     def next_possibilities = nextInRagaMap(direction, swara)
     def n = next_possibilities.values().sort().unique().reverse()
@@ -112,6 +116,7 @@ class RagaAnalyzer {
     def next = n[x]
   }
 
+
   private nextInRagaMap(direction, swara) {
     def ss = this.allPossibleCases(swara[0])
     def oo = [swara[1], 0].unique()
@@ -125,6 +130,7 @@ class RagaAnalyzer {
     } 
     return this.raga_map[direction][keys[0]]
   }
+
 
   public walkRagaMap(direction, swara, length){
     if (this.walk_list.size() == 0) {
@@ -149,6 +155,8 @@ class RagaAnalyzer {
       }
     }
   }
+
+
   public generateRagaMap() {
     this.rel_edge_histo.each { redge, wt ->
       def L = redge[0]
@@ -216,6 +224,7 @@ class RagaAnalyzer {
     return histo
   }
 
+
   private computeRelativeEdges(){
     this.rel_edges = []
     this.abs_edges.each { edge ->
@@ -230,6 +239,7 @@ class RagaAnalyzer {
       this.rel_edges.push([[Ln, rl_delta], [Rn, 0]])
     }
   }
+
 
   static void main(args) {
     def ra = new RagaAnalyzer()
