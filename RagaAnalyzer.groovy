@@ -57,7 +57,6 @@ class RagaAnalyzer {
     this.computeRelativeEdges()
     this.rel_edge_histo = computeHistogram(this.rel_edges)
     this.generateRagaMap()
-    //printRagaMap()
   }
 
 
@@ -78,7 +77,11 @@ class RagaAnalyzer {
 
 
   public getRagaMap() { return this.raga_map }
+
+
   private initWalk (){ this.walk_list = [] }
+
+
   private printWalkList () {
     def lines = this.walk_list.size()/4.0
     lines.each { l ->
