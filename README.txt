@@ -4,11 +4,21 @@ Download jfugue 4.0.3 ( from http://www.jfugue.org/jfugue-4.0.3.jar ) or later v
 Files:
 ragamroll.groovy - UI code
 NotationParser.groovy - compiles srgm notation to JFugue.
+RagaAnalyer.groovy - analyzes a composition and builds a note transition graph
+RagaImitator.groovy - generates new composition based on a given composition
 raga_base.txt - contains the raga definitons
+GroovyWrapper.groovy - compiles groovy scripts into executable jars
 
-From the directory where you have downloaded the above files, run
+grun.sh - script to invoke groovy with jfugue in classpath
+
+To run, from the directory where you have downloaded the above files, run
 
 groovy -cp <path to jfugue jar> ragamroll.groovy
 
-The application jar file was built using GroovyWrapper script available in 
-http://groovy.codehaus.org/WrappingGroovyScript
+or
+
+grun.sh ragamroll.groovy
+
+To build an executable jar file
+
+grun.sh GroovyWrapper.groovy -c -m ragamroll
