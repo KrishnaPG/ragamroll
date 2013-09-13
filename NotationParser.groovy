@@ -43,7 +43,8 @@ class NotationParser {
   def cur_length_mod = 1; // Integral Note Length L=1
   def tala_gati_tuple = ['adi','4']
   def raga_key_tuple = ['c12','0']
-  def cur_srg_abc_map = raga_base.ragas[raga_key_tuple[0]]['C12_SWARAS']
+  def c12_srg_abc_map = raga_base.ragas[raga_key_tuple[0].toLowerCase()]['C12_SWARAS']
+  def cur_srg_abc_map = c12_srg_abc_map
   def cur_raga_swaras = cur_srg_abc_map.keySet()
 
   def SWARA_REGEX = /(>*|<*)(s|S|r|R|g|G|m|M|p|P|d|D|n|N|z|Z)(\d*)/
@@ -275,15 +276,27 @@ class NotationParser {
       }
     }
 
-    def jfm = "V${voice} I[SITAR] "
+    def jfm_s = "V${voice} I[SITAR] "
+    def jfm_p = "V${voice+1} I[SITAR] &8356 " //add 2 cents to P
     def Avarthanam = ""
     (0..measure-1).each{ t -> 
-      Avarthanam += ((t+1 in accents) ? 
-            "${cur_srg_abc_map['S']}/${len}+${cur_srg_abc_map['P']}/${len} " : 
-            "R/${len} ") 
+      Avarthanam += ((t+1 in accents) ?
+	     "${c12_srg_abc_map['S']}/${len} " : 
+	     "R/${len} ") 
     }
     log( "Avarthanam: ${Avarthanam}")
-    jfm += Avarthanam*(seq_props['seq_len']/measure + 1)
+    def jfm = jfm_s + Avarthanam*(seq_props['seq_len']/measure + 1)
+
+    Avarthanam = ""
+    (0..measure-1).each{ t -> 
+      Avarthanam += ((t+1 in accents) ?
+	     "${c12_srg_abc_map['P']}/${len} " : 
+	     "R/${len} ") 
+    }
+    log( "Avarthanam: ${Avarthanam}")
+    jfm += jfm_p + Avarthanam*(seq_props['seq_len']/measure + 1)
+    println jfm
+
     try {
       return (new IntervalPatternTransformer(
                 Integer.decode(raga_key_tuple[1])).transform(
@@ -425,13 +438,17 @@ class NotationParser {
     return disp_txt
   }
 
+
   def get_seq_list() {
     return swara_seq
   }
+
+
   /*-------------------------------------------------------------------------*/
   // Provide an entry point for testing this class
-  // If a compact notation file is give it is rendered
+  // If a srgm file containing notation is given it is rendered
   // Otherwise a test string is rendered in various ragas
+  // TODO: convert this into an actual test
   /*-------------------------------------------------------------------------*/
   static void main(args) {
     def np = new NotationParser()
