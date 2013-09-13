@@ -64,7 +64,7 @@ class NotationParser {
   Boolean debug = false
 
   /*-------------------------------------------------------------------------*/
-  // Convenience function to pring output for debugging
+  // Convenience function to print output for debugging
   /*-------------------------------------------------------------------------*/
   def log(s) { if (this.debug == true) println (s) }
 
