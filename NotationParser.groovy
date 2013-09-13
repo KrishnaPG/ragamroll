@@ -28,6 +28,7 @@ class NotationParser {
     'dhruva' : [14,[1,5,7,11]],  // I O I I - 4 2 4 4 - Chatusra Jati
     'matya' : [10,[1,5,7]],      // I O I   - 4 2 4   - Chatusra Jati
     'rupaka' : [6,[1,3]],        // O I     - 2 4     - Chatusra Jati
+    'rupaka3' : [5,[1,3]],        // O I     - 2 3     - Tisra Jati
     'jhampa' : [10,[1,8,9]],     // I U O   - 7 1 2   - Misra Jati
     'triputa' : [7,[1,4,6]],     // I O O   - 3 2 2   - Thisra Jati
     'ata' : [14,[1,6,11,13]],    // I I O O - 5 5 2 2 - Khanda Jati
@@ -42,8 +43,7 @@ class NotationParser {
   def cur_length_mod = 1; // Integral Note Length L=1
   def tala_gati_tuple = ['adi','4']
   def raga_key_tuple = ['c12','0']
-  def c12_srg_abc_map = raga_base.ragas[raga_key_tuple[0].toLowerCase()]['C12_SWARAS']
-  def cur_srg_abc_map = c12_srg_abc_map
+  def cur_srg_abc_map = raga_base.ragas[raga_key_tuple[0]]['C12_SWARAS']
   def cur_raga_swaras = cur_srg_abc_map.keySet()
 
   def SWARA_REGEX = /(>*|<*)(s|S|r|R|g|G|m|M|p|P|d|D|n|N|z|Z)(\d*)/
@@ -64,7 +64,7 @@ class NotationParser {
   Boolean debug = false
 
   /*-------------------------------------------------------------------------*/
-  // Convenience function to print output for debugging
+  // Convenience function to pring output for debugging
   /*-------------------------------------------------------------------------*/
   def log(s) { if (this.debug == true) println (s) }
 
@@ -131,10 +131,7 @@ class NotationParser {
     def tr_jfm = new IntervalPatternTransformer(semitones_above_C).transform(
                       new Pattern(jfm) ).getMusicString().split()[1]
 
-    def out = [] 
-    out << elem << MP.getNote(tr_jfm).value << cur_length_mod * rel_len
-    //println out
-    return out
+    return [] << elem << MP.getNote(tr_jfm).value << cur_length_mod * rel_len
   }
 
   /*-------------------------------------------------------------------------*/
@@ -278,29 +275,15 @@ class NotationParser {
       }
     }
 
-    def jfm_s = "V${voice} I[SITAR] "
-    def jfm_p = "V${voice+1} I[SITAR] &8356 " //add 2 cents to P
+    def jfm = "V${voice} I[SITAR] "
     def Avarthanam = ""
     (0..measure-1).each{ t -> 
       Avarthanam += ((t+1 in accents) ? 
-	     //"${c12_srg_abc_map['S']}/${len}+${c12_srg_abc_map['P']}/${len} " : 
-	     "${c12_srg_abc_map['S']}/${len} " : 
-	     "R/${len} ") 
+            "${cur_srg_abc_map['S']}/${len}+${cur_srg_abc_map['P']}/${len} " : 
+            "R/${len} ") 
     }
     log( "Avarthanam: ${Avarthanam}")
-    def jfm = jfm_s + Avarthanam*(seq_props['seq_len']/measure + 1)
-
-    Avarthanam = ""
-    (0..measure-1).each{ t -> 
-      Avarthanam += ((t+1 in accents) ? 
-	     //"${c12_srg_abc_map['S']}/${len}+${c12_srg_abc_map['P']}/${len} " : 
-	     "${c12_srg_abc_map['P']}/${len} " : 
-	     "R/${len} ") 
-    }
-    log( "Avarthanam: ${Avarthanam}")
-    jfm += jfm_p + Avarthanam*(seq_props['seq_len']/measure + 1)
-    println jfm
-
+    jfm += Avarthanam*(seq_props['seq_len']/measure + 1)
     try {
       return (new IntervalPatternTransformer(
                 Integer.decode(raga_key_tuple[1])).transform(
@@ -442,11 +425,13 @@ class NotationParser {
     return disp_txt
   }
 
+  def get_seq_list() {
+    return swara_seq
+  }
   /*-------------------------------------------------------------------------*/
   // Provide an entry point for testing this class
-  // If a srgm file containing notation is given it is rendered
+  // If a compact notation file is give it is rendered
   // Otherwise a test string is rendered in various ragas
-  // TODO: convert this into an actual test
   /*-------------------------------------------------------------------------*/
   static void main(args) {
     def np = new NotationParser()
