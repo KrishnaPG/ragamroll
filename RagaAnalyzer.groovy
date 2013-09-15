@@ -38,7 +38,9 @@ class RagaAnalyzer {
           }
           if (note in ['z', 'Z']) { octave = '0' }
           toks.push([note, octave])
-          } 
+        }  else {
+          toks.push(['-', '0'])
+        }
       } catch (e){
         println e
       }
@@ -48,9 +50,11 @@ class RagaAnalyzer {
       def start_octave = Integer.decode(toks[i-1][1])
       def end_note = toks[i][0]
       def end_octave = Integer.decode(toks[i][1])
-      this.abs_edges.push([[start_note, start_octave], [end_note, end_octave]])
-      this.abs_nodes.push([start_note, start_octave])
-      this.abs_nodes.push([end_note, end_octave])
+      if (![start_note, end_note].contains('-')) {
+        this.abs_edges.push([[start_note, start_octave], [end_note, end_octave]])
+        this.abs_nodes.push([start_note, start_octave])
+        this.abs_nodes.push([end_note, end_octave])
+      }
     }
     this.abs_nodes_histo = computeHistogram(this.abs_nodes)
     this.abs_edge_histo = computeHistogram(this.abs_edges)
@@ -75,13 +79,8 @@ class RagaAnalyzer {
     }
   }
 
-
   public getRagaMap() { return this.raga_map }
-
-
   private initWalk (){ this.walk_list = [] }
-
-
   private printWalkList () {
     def lines = this.walk_list.size()/4.0
     lines.each { l ->
@@ -95,12 +94,9 @@ class RagaAnalyzer {
     }
   }
 
-
   private allPossibleCases(c){
     return [c, c.toUpperCase(), c.toLowerCase()].unique()
   }
-
-
   private walkAstep(direction, swara){
     def next_possibilities = nextInRagaMap(direction, swara)
     def n = next_possibilities.values().sort().unique().reverse()
@@ -119,7 +115,6 @@ class RagaAnalyzer {
     def next = n[x]
   }
 
-
   private nextInRagaMap(direction, swara) {
     def ss = this.allPossibleCases(swara[0])
     def oo = [swara[1], 0].unique()
@@ -133,7 +128,6 @@ class RagaAnalyzer {
     } 
     return this.raga_map[direction][keys[0]]
   }
-
 
   public walkRagaMap(direction, swara, length){
     if (this.walk_list.size() == 0) {
@@ -158,8 +152,6 @@ class RagaAnalyzer {
       }
     }
   }
-
-
   public generateRagaMap() {
     this.rel_edge_histo.each { redge, wt ->
       def L = redge[0]
@@ -213,7 +205,9 @@ class RagaAnalyzer {
     this.abs_edge_histo.each { i->
       out_string += '"' + i.key[0].join() + '" -> "' + i.key[1].join() + '"[' + 
 	    'label="' + i.value + '", ' +
-	    'weight=' + i.value.toFloat() + '' +
+	    'weight=' + i.value.toFloat() + ', ' +
+	    'decorate=true' +
+	    //'constraint=false' +
 	    ']\n';
     }
     out_string += "}"
@@ -226,7 +220,6 @@ class RagaAnalyzer {
     alist.each { histo[it] = (histo[it] ?: 0) + 1 }
     return histo
   }
-
 
   private computeRelativeEdges(){
     this.rel_edges = []
@@ -243,7 +236,6 @@ class RagaAnalyzer {
     }
   }
 
-
   static void main(args) {
     def ra = new RagaAnalyzer()
 
@@ -253,8 +245,8 @@ class RagaAnalyzer {
       def f = new File(args[0])
       def composition = f.getText()
       ra.parseComposition(composition)
-      //println ra.generateDot()
-      ra.printRagaMap()
+      println ra.generateDot()
+      //ra.printRagaMap()
       /////////////////////////////////////////////////////////////
       // Persist the raga definition to disk for use by other code
       // why not add it to the corpus itself
@@ -332,12 +324,12 @@ class RagaAnalyzer {
       """
       ra.parseComposition(composition)
       //println ra.generateDot()
-      //ra.printRagaMap()
+      ra.printRagaMap()
+      /*
       ['forward', 'inverse'].each { dir ->
         this.initWalk = []
         def rev = ra.walkRagaMap( dir , ['S',0] , 32).collect{ it[0] }
         println rev.join(' ')
-        /*
         0.step(rev.size(), 4) { s->
           4.times { i ->
             print rev[s+i] + ' '
@@ -345,8 +337,8 @@ class RagaAnalyzer {
           println ' '
         }
         println ' '
-        */
-      }
+      } */
     }
   }
 }
+
