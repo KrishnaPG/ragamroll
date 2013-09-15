@@ -88,7 +88,7 @@ class NotationParser {
     def midi_notes = []
     def note_lengths = []
     swara_seq.each { v -> 
-      if(v[0] != 'jfugue' && v[0] != 'raga' && v[0] != 'tala') {
+      if(v[0] != 'jfugue' && v[0] != 'raga' && v[0] != 'tala' && v[0] != 'separator') {
         midi_notes.push(v[1])
         note_lengths.push(v[2])
       }
@@ -218,6 +218,8 @@ class NotationParser {
               // pass it through assuming a JFugue token
               swara_seq << ['jfugue',token]
           }
+        } else if (token.equals('-')) { 
+          swara_seq << ['separator',token]
         } else { 
           // pass it through assuming a JFugue token
           // log "else: ${token}"
@@ -237,8 +239,10 @@ class NotationParser {
     swara_seq.each{ e -> 
       log("seq: e ${e}")
       def swara = e[0]
-      if (swara.equals('jfugue')) { jfm += " " + e[1] + " " }
-      else if ( ! swara.equals('raga') && ! swara.equals('tala')) {
+      if (swara.equals('jfugue')) { jfm += " " + e[1] + " " 
+      } else if (swara.equals('separator')) { 
+        // ignore
+      } else if ( ! swara.equals('raga') && ! swara.equals('tala')) {
         jfm += " ["  + e[1] + "]/" + len*e[2] + " "
       }
     }
@@ -353,7 +357,7 @@ class NotationParser {
         beat = tala_props['beat']
         accents = tala_props['accents']
       }
-      if(v[0] != 'jfugue' && v[0] != 'raga' && v[0] != 'tala') {
+      if(v[0] != 'jfugue' && v[0] != 'raga' && v[0] != 'tala' && v[0] != 'separator') {
         disp_txt += v[0][0]
         if (v[2].toInteger() > 1) {
           (0..(v[2].toInteger()-2)).each { 
@@ -404,7 +408,7 @@ class NotationParser {
         beat = tala_props['beat']
         accents = tala_props['accents']
       }
-      if (v[0] != 'jfugue' && v[0] != 'raga' && v[0] != 'tala') {
+      if(v[0] != 'jfugue' && v[0] != 'raga' && v[0] != 'tala' && v[0] != 'separator') {
         def swara = v[0][0]
         def disp = swara
         def cols = v[1]
@@ -474,7 +478,7 @@ class NotationParser {
       t << " "
       def in_str="""
       T900 I[PIANO] 
-      L=4 O=5 S R G M P D N >S Z S <N D P M G R S Z
+      L=4 O=5 - S R G M - P D N >S - Z S <N D P M G R S Z
       L=2 O=6 s >R L=1 <<m4 L=2 M4 p P8 
       >>>s S <<<n D  g R Z
       T700 I[ALTO_SAX] s <n8 d4 D"""
