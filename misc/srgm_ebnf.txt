@@ -1,0 +1,25 @@
+composition := ((directive)+ ? (octave_shifted_timed_note | timed_rest)+)+
+
+comment := '%'+ .*
+
+directive := left_word '=' right_side
+
+jfugue_directive := 'jfugue' '(' jfugue_string ')'
+
+raga_directive := 'raga' '=' (raga_name | mela_name) ',' '[ 0-11]
+
+tala_directive := 'tala' '=' (common_tala_name | tala_def) ',' \d+
+
+length_directive := 'L' '=' \d+
+
+octave_directive := 'O' '=' [1-8]
+
+octave_shifted_timed_note := (< | >)+? timed_note
+
+timed_note := note (\d+)?
+
+timed_rest := rest (\d+)? 
+
+note := 's' | 'r' | 'g' | 'm' | 'p' | 'd' | 'n' | 'S' | 'R' | 'G' | 'M' | 'P | 'D' | 'N'
+
+rest := 'z' | 'Z'
