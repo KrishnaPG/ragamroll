@@ -6,21 +6,25 @@ composition :	(WS)? (directive* time_consumer)+ ;
 		
 time_consumer : (note|rest);
 
-directive : (short_directive | octave_directive | length_directive | raga_directive | tala_directive);
+directive : (short_octave_directive | octave_directive | length_directive | raga_directive | tala_directive | jfugue_passthru);
 
-octave_directive : ('O' '=') NUMBER (WS+ | EOF);
+octave_directive : ('O' '=') NUMBER (WS+|EOF);
 
-length_directive : ('L' '=') NUMBER (WS+ | EOF); 
+length_directive : ('L' '=') NUMBER (WS+|EOF); 
 
-short_directive 
+short_octave_directive 
 	: OCTAVE_SHIFTER (WS+|EOF);
 
-raga_directive : ('Raga' '=') ALPHA (',' NUMBER)? (WS+|EOF); // TODO: limit between 1 and 11
-tala_directive : ('Tala' '=') ALPHA (',' NUMBER)? (WS+|EOF); // Some sanity check is needed here,
-
+raga_directive : ('Raga' '=') ALPHA (',' NUMBER)? (WS+|EOF); // Digit doesn't go to 11 and 12
+tala_directive : ('Tala' '=') ALPHA (',' NUMBER)? (WS+|EOF); // Digit doesn't go to 11 and 12
+	
 note	: (OCTAVE_SHIFTER)? NOTE (NUMBER)* (WS+ | EOF);
 
 rest	: REST (NUMBER)* (WS+|EOF);
+
+//TODO: remove dependency on jfugue
+jfugue_passthru 
+	:	('jfugue' ':') (ALPHA|NUMBER|'['|']')* (WS+|EOF);
 
 OCTAVE_SHIFTER : ('<'+ | '>'+);
 
@@ -30,10 +34,10 @@ NOTE :	( 's' | 'r' | 'g' | 'm' | 'p' | 'd' | 'n' | 'S' | 'R' | 'G' | 'M' | 'P' |
 
 NUMBER  : (DIGIT)+ ;
  
-WS : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ ;
+WS : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+;
  
 fragment DIGIT  : '0'..'9' ;
 
 ALPHA 	:	('a'..'z'|'A'..'Z')+;
 
-COMMENT :	'%' ( ~('\r'|'\n')* ) '\r'? '\n' {skip();};
+COMMENT :	'%' ( ~('\r'|'\n')* ) '\r'? '\n'+ {skip();};
