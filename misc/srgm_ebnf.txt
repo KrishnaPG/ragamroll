@@ -1,25 +1,39 @@
-composition := ((directive)+ ? (octave_shifted_timed_note | timed_rest)+)+
+// antlr grammar created using antlrworks
 
-comment := '%'+ .*
+grammar srgm;
 
-directive := left_word '=' right_side
+composition :	(WS)? (directive* time_consumer)+ ;
+		
+time_consumer : (note|rest);
 
-jfugue_directive := 'jfugue' '(' jfugue_string ')'
+directive : (short_directive | octave_directive | length_directive | raga_directive | tala_directive);
 
-raga_directive := 'raga' '=' (raga_name | mela_name) ',' '[ 0-11]
+octave_directive : ('O' '=') NUMBER (WS+ | EOF);
 
-tala_directive := 'tala' '=' (common_tala_name | tala_def) ',' \d+
+length_directive : ('L' '=') NUMBER (WS+ | EOF); 
 
-length_directive := 'L' '=' \d+
+short_directive 
+	: OCTAVE_SHIFTER (WS+|EOF);
 
-octave_directive := 'O' '=' [1-8]
+raga_directive : ('Raga' '=') ALPHA (',' NUMBER)? (WS+|EOF); // TODO: limit between 1 and 11
+tala_directive : ('Tala' '=') ALPHA (',' NUMBER)? (WS+|EOF); // Some sanity check is needed here,
 
-octave_shifted_timed_note := (< | >)+? timed_note
+note	: (OCTAVE_SHIFTER)? NOTE (NUMBER)* (WS+ | EOF);
 
-timed_note := note (\d+)?
+rest	: REST (NUMBER)* (WS+|EOF);
 
-timed_rest := rest (\d+)? 
+OCTAVE_SHIFTER : ('<'+ | '>'+);
 
-note := 's' | 'r' | 'g' | 'm' | 'p' | 'd' | 'n' | 'S' | 'R' | 'G' | 'M' | 'P | 'D' | 'N'
+REST:('z' | 'Z');
 
-rest := 'z' | 'Z'
+NOTE :	( 's' | 'r' | 'g' | 'm' | 'p' | 'd' | 'n' | 'S' | 'R' | 'G' | 'M' | 'P' | 'D' | 'N' );
+
+NUMBER  : (DIGIT)+ ;
+ 
+WS : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ ;
+ 
+fragment DIGIT  : '0'..'9' ;
+
+ALPHA 	:	('a'..'z'|'A'..'Z')+;
+
+COMMENT :	'%' ( ~('\r'|'\n')* ) '\r'? '\n' {skip();};
