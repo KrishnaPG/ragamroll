@@ -27,7 +27,7 @@ rest	: REST (NUMBER)* (WS+|EOF);
 
 //TODO: remove dependency on jfugue
 jfugue_passthru 
-	:	('jfugue' ':') (ALPHA|NUMBER|'['|']')* (WS+|EOF);
+	:	('jfugue' ':') (ALPHA|NUMBER|'_'|'['|']')* (WS+|EOF);
 
 OCTAVE_SHIFTER : ('<'+ | '>'+);
 
