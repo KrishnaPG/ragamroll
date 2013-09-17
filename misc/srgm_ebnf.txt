@@ -6,7 +6,7 @@ composition :	(WS)? (directive* time_consumer)+ ;
 		
 time_consumer : (note|rest);
 
-directive : (short_octave_directive | octave_directive | length_directive | raga_directive | tala_directive | jfugue_passthru);
+directive : (short_octave_directive | octave_directive | length_directive | raga_directive | tala_directive | jfugue_passthru | phrase_separator);
 
 octave_directive : ('O' '=') NUMBER (WS+|EOF);
 
@@ -14,6 +14,9 @@ length_directive : ('L' '=') NUMBER (WS+|EOF);
 
 short_octave_directive 
 	: OCTAVE_SHIFTER (WS+|EOF);
+
+phrase_separator 
+	: PHRASE_SEPARATOR (WS+|EOF);
 
 raga_directive : ('Raga' '=') ALPHA (',' NUMBER)? (WS+|EOF); // Digit doesn't go to 11 and 12
 tala_directive : ('Tala' '=') ALPHA (',' NUMBER)? (WS+|EOF); // Digit doesn't go to 11 and 12
@@ -41,3 +44,6 @@ fragment DIGIT  : '0'..'9' ;
 ALPHA 	:	('a'..'z'|'A'..'Z')+;
 
 COMMENT :	'%' ( ~('\r'|'\n')* ) '\r'? '\n'+ {skip();};
+
+PHRASE_SEPARATOR: '-';
+
