@@ -29,6 +29,8 @@ s r g % inline comment from % till end-of-line
 % These should fail -  wasteful octave shifts
 % <> 
 % ><
+% >z
+% >Z
 
 % notes without spaces
 % srg
