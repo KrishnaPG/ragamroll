@@ -8,15 +8,21 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 
 public class srgmBaseListener implements srgmListener {
   private class State {
+    public int inp_line;
+    public int inp_char;
     public int cur_octave;
     public int cur_note_length;
     public String cur_raga;
     public String cur_tala;
+    public int seq_pos;
     @Override public String toString() {
-      return "octave: " + cur_octave + 
-             ", nlength: " + cur_note_length +
-             ", raga: " + cur_raga +
-             ", tala: " + cur_tala;
+      return "l: " + inp_line +
+             ", c: " + inp_char +
+             ", seq_pos: " + seq_pos +
+             ", O: " + cur_octave + 
+             ", L: " + cur_note_length +
+             ", R: " + cur_raga +
+             ", T: " + cur_tala;
     }
   }
   private State state;
@@ -49,9 +55,9 @@ public class srgmBaseListener implements srgmListener {
                         + "\\u205F" // MEDIUM MATHEMATICAL SPACE
                         + "\\u3000" // IDEOGRAPHIC SPACE
                         ;        
-  /* A \s that actually works for Java’s native character set: Unicode */
+  /* A \s that actually works for Javaâ€™s native character set: Unicode */
   private String     whitespace_charclass = "["  + whitespace_chars + "]";    
-  /* A \S that actually works for  Java’s native character set: Unicode */
+  /* A \S that actually works for  Javaâ€™s native character set: Unicode */
   private String not_whitespace_charclass = "[^" + whitespace_chars + "]";
 
 	@Override public void enterTala_directive(srgmParser.Tala_directiveContext ctx) { }
@@ -76,7 +82,8 @@ public class srgmBaseListener implements srgmListener {
   }
 
 	@Override public void enterTime_consumer(srgmParser.Time_consumerContext ctx) { }
-	@Override public void exitTime_consumer(srgmParser.Time_consumerContext ctx) { }
+	@Override public void exitTime_consumer(srgmParser.Time_consumerContext ctx) {
+  }
 
 	@Override public void enterRaga_directive(srgmParser.Raga_directiveContext ctx) { }
 	@Override public void exitRaga_directive(srgmParser.Raga_directiveContext ctx) { 
@@ -93,15 +100,20 @@ public class srgmBaseListener implements srgmListener {
 	@Override public void enterComposition(srgmParser.CompositionContext ctx) {
     sequence = new ArrayList<String>();
     state = new State();
+    state.inp_char = 0;
+    state.inp_line = 0;
+    state.seq_pos = 0;
     state.cur_octave = 5;
     state.cur_note_length = 1;
     state.cur_raga = "c12,0";
     state.cur_tala = "adi,4";
-    System.out.println(state);
+    //System.out.println(state);
   }
 
 	@Override public void exitComposition(srgmParser.CompositionContext ctx) {
-    System.out.println(sequence);
+    for ( String s : sequence ) {
+      System.out.println(s);
+    }
   }
 
 	@Override public void enterOctave_directive(srgmParser.Octave_directiveContext ctx) { }
@@ -111,15 +123,23 @@ public class srgmBaseListener implements srgmListener {
   }
 
 	@Override public void enterRest(srgmParser.RestContext ctx) { }
-	@Override public void exitRest(srgmParser.RestContext ctx) { dumpContext(ctx); }
+	@Override public void exitRest(srgmParser.RestContext ctx) { 
+    dumpContext(ctx); 
+    int time_consumed = 1;
+    try {
+      time_consumed = Integer.decode(ctx.NUMBER().get(0).getText());
+    } catch (Exception e) {
+      //do nothing
+    }
+    state.seq_pos += state.cur_note_length * time_consumed;
+}
 
 	@Override public void enterDirective(srgmParser.DirectiveContext ctx) { }
 	@Override public void exitDirective(srgmParser.DirectiveContext ctx) { }
 
 	@Override public void enterJfugue_passthru(srgmParser.Jfugue_passthruContext ctx) { }
 	@Override public void exitJfugue_passthru(srgmParser.Jfugue_passthruContext ctx) { 
-      
-      //dumpContext(ctx); 
+      dumpContext(ctx); 
    }
 
 	@Override public void enterNote(srgmParser.NoteContext ctx) { }
@@ -129,20 +149,34 @@ public class srgmBaseListener implements srgmListener {
       oct_delta = octaveDelta(ctx.OCTAVE_SHIFTER().getText());
     }
     state.cur_octave += oct_delta;
+
     dumpContext(ctx);
+
     state.cur_octave -= oct_delta;
+    int time_consumed = 1;
+    //if (ctx.NUMBER() != null) {
+    try {
+      time_consumed = Integer.decode(ctx.NUMBER().get(0).getText());
+    } catch (Exception e) {
+      // do nothing
+    }
+    state.seq_pos += state.cur_note_length * time_consumed;
   }
 
-	@Override public void enterEveryRule(ParserRuleContext ctx) { }
+	@Override public void enterEveryRule(ParserRuleContext ctx) {
+  }
+
 	@Override public void exitEveryRule(ParserRuleContext ctx) { }
 	@Override public void visitTerminal(TerminalNode node) { }
 	@Override public void visitErrorNode(ErrorNode node) { }
 
   private void dumpContext(ParserRuleContext ctx) {
-    System.out.print(ctx.getStart().getLine() + ":" +
-      ctx.getStart().getCharPositionInLine() + " " );
+    /*System.out.print(ctx.getStart().getLine() + ":" +
+      ctx.getStart().getCharPositionInLine() + " " );*/
+    state.inp_line = ctx.getStart().getLine();
+    state.inp_char = ctx.getStart().getCharPositionInLine();
     String t = ctx.getText().replaceAll(whitespace_charclass + "+", "");
-    System.out.println(state.toString() + " " + t);
-    sequence.add(t);
+    //System.out.println(state.toString() + " " + t);
+    sequence.add(state.toString() + " " + t);
   }
 }
