@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.tree.ErrorNode;
+import java.util.HashMap;
 
 public class srgmBaseListener implements srgmListener {
   private class State {
@@ -15,16 +16,41 @@ public class srgmBaseListener implements srgmListener {
     public String cur_raga;
     public String cur_tala;
     public int seq_pos;
+    public int midi_note;
     @Override public String toString() {
       return "l: " + inp_line +
              ", c: " + inp_char +
              ", seq_pos: " + seq_pos +
-             ", O: " + cur_octave + 
-             ", L: " + cur_note_length +
              ", R: " + cur_raga +
-             ", T: " + cur_tala;
+             ", T: " + cur_tala +
+             ", L: " + cur_note_length +
+             ", O: " + cur_octave + 
+             ", M: " + midi_note;
     }
+
   }
+
+  // Temporary hack
+  // This should do a lookup based on Raga
+  private int getNoteNum(String note) {
+    HashMap<String, Integer> nMap = new HashMap<String, Integer>();
+    nMap.put("s", new Integer(0));
+    nMap.put("S", new Integer(0));
+    nMap.put("r", new Integer(1));
+    nMap.put("R", new Integer(2));
+    nMap.put("g", new Integer(3));
+    nMap.put("G", new Integer(4));
+    nMap.put("m", new Integer(5));
+    nMap.put("M", new Integer(6));
+    nMap.put("p", new Integer(7));
+    nMap.put("P", new Integer(7));
+    nMap.put("d", new Integer(8));
+    nMap.put("D", new Integer(9));
+    nMap.put("n", new Integer(10));
+    nMap.put("N", new Integer(11));
+    return state.cur_octave * 12 + nMap.get(note).intValue();
+  }
+
   private State state;
   private ArrayList<String> sequence;
   private String whitespace_chars =  ""       /* dummy empty string for homogeneity */
@@ -149,9 +175,11 @@ public class srgmBaseListener implements srgmListener {
       oct_delta = octaveDelta(ctx.OCTAVE_SHIFTER().getText());
     }
     state.cur_octave += oct_delta;
-
+    // getMidiNote( state.cur_raga, ctx.NOTE().getText(), state.cur_octave)
+    state.midi_note = getNoteNum(ctx.NOTE().getText());
     dumpContext(ctx);
-
+    // all these should happen after translating the swara to a midi note
+    state.midi_note = 0;
     state.cur_octave -= oct_delta;
     int time_consumed = 1;
     //if (ctx.NUMBER() != null) {
@@ -176,7 +204,7 @@ public class srgmBaseListener implements srgmListener {
     state.inp_line = ctx.getStart().getLine();
     state.inp_char = ctx.getStart().getCharPositionInLine();
     String t = ctx.getText().replaceAll(whitespace_charclass + "+", "");
-    //System.out.println(state.toString() + " " + t);
+    System.out.println(state.toString() + " " + t);
     sequence.add(state.toString() + " " + t);
   }
 }
