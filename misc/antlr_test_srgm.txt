@@ -1,4 +1,40 @@
 % Jfugue tempo and instrument
+
+jfugue:T500 jfugue:I[ALTO_SAX] 
+
+% All talas in their default jati are supported
+Tala=adi,8
+
+% A limited set of ragas are only supported. However using C12 notation
+% all ragas can be notated. 
+Raga=abhogi,4
+
+% Set the octave to 5 and unit length to 1
+L=2 O=6
+
+S S <D S >S D
+% try octave shift by itself 
+> 
+
+% empty measure to get prepared
+z32 z
+
+% Ev - va - ri - - -        bo - - -      dha - - -   na - - -          - - vi -  - - - ni            - - - -
+R2 G2     G R S2     S R S S       <D M D2   M D >S -  <D2 >S - <D >S  R G2 - M    G G R S
+-
+
+s r g % inline comment from % till end-of-line
+
+% These should pass
+>>s > s << r 
+
+% These should fail -  wasteful octave shifts
+% <> 
+% ><
+
+% notes without spaces
+% srg
+% Jfugue tempo and instrument
 jfugue:T500 jfugue:I[ALTO_SAX] 
 
 % All talas in their default jati are supported
@@ -29,8 +65,7 @@ s r g % inline comment from % till end-of-line
 % These should fail -  wasteful octave shifts
 % <> 
 % ><
-% >z
-% >Z
 
 % notes without spaces
 % srg
+
