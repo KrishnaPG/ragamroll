@@ -18,8 +18,8 @@ short_octave_directive
 phrase_separator 
 	: PHRASE_SEPARATOR (WS+|EOF);
 
-raga_directive : ('Raga' '=') ALPHA (',' NUMBER)? (WS+|EOF); // Digit doesn't go to 11 and 12
-tala_directive : ('Tala' '=') ALPHA (',' NUMBER)? (WS+|EOF); // Digit doesn't go to 11 and 12
+raga_directive : ('Raga' '=') ALPHA (',' NUMBER)? (WS+|EOF); // Add a sanity check to keep this between 0 - 11
+tala_directive : ('Tala' '=') ALPHA (',' NUMBER)? (WS+|EOF); // What would be a sane value for NUMBER ?
 	
 note	: (OCTAVE_SHIFTER)? NOTE (NUMBER)* (WS+ | EOF);
 
