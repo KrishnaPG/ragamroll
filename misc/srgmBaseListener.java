@@ -53,6 +53,8 @@ public class srgmBaseListener implements srgmListener {
 
   private State state;
   private ArrayList<String> sequence;
+  
+  // lifted from http://stackoverflow.com/questions/4731055/whitespace-matching-regex-java
   private String whitespace_chars =  ""       /* dummy empty string for homogeneity */
                         + "\\u0009" // CHARACTER TABULATION
                         + "\\u000A" // LINE FEED (LF)
