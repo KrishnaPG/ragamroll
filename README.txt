@@ -1,3 +1,5 @@
+Exported from original: https://code.google.com/p/ragamroll/ since google code is going to be shutdown (or whatever).
+
 Install groovy (from http://groovy.codehaus.org/Download) and ensure that it works
 Download jfugue 4.0.3 ( from http://www.jfugue.org/jfugue-4.0.3.jar ) or later version.
 
